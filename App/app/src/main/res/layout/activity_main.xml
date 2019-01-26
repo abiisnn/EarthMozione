@@ -7,29 +7,44 @@
     tools:context="com.escombros.prueba.MainActivity"
     android:background="@color/lightblue">
 
-    <Button
-        android:id="@+id/connect"
-        android:layout_width="179dp"
-        android:layout_height="63dp"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="54dp"
-        android:text="Conectar" />
-
     <TextView
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:text="EarthMozione"
-        android:textSize="45dp" />
+        android:text="@string/app_title"
+        android:layout_marginTop="20dp"
+        android:textSize="45sp" />
 
     <ImageView
-        android:layout_width="283dp"
+        android:layout_width="match_parent"
         android:layout_height="316dp"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="46dp"
-        android:src="@drawable/logo" />
+        android:layout_marginTop="120dp"
+        android:src="@drawable/logo"
+        android:contentDescription="@string/app_image" />
+
+    <Button
+        android:id="@+id/connect"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="63dp"
+        android:text="@string/connect"
+        android:textSize="20sp"
+        android:background="@color/green"/>
+
+    <Button
+        android:id="@+id/disconnect"
+        android:layout_width="match_parent"
+        android:layout_height="63dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:text="@string/disconnect"
+        android:textColor="@color/white"
+        android:textSize="20sp"
+        android:background="@color/red"/>
 
 </RelativeLayout>

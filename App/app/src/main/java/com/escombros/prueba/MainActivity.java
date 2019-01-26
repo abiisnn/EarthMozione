@@ -1,5 +1,6 @@
 package com.escombros.prueba;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -13,6 +14,7 @@ import android.provider.Settings;
 import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -25,7 +27,6 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-
 import java.sql.Timestamp;
 import java.util.Date;
 
@@ -37,17 +38,15 @@ public class MainActivity extends AppCompatActivity {
 
     BluetoothSPP bluetooth;
 
-    Button connect;
-
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ActionBar actionBar = getSupportActionBar();
-        actionBar.hide();
+        if (actionBar != null)
+            actionBar.hide();
         bluetooth = new BluetoothSPP(this);
-
-        connect = findViewById(R.id.connect);
 
         if (!bluetooth.isBluetoothAvailable()) {
             Toast.makeText(getApplicationContext(), "Bluetooth is not available", Toast.LENGTH_SHORT).show();
@@ -60,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
                 int intensidad = Integer.parseInt(message);
                 if (intensidad > 3) {
                     try {
-                        Date date= new Date();
+                        Date date = new Date();
                         long time = date.getTime();
                         Timestamp ts = new Timestamp(time);
                         String jsobject = "{id_sensor : 1, timestamp : " + ts.toString() + " ," +
@@ -68,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
                         // las coordenadas de arriba son estaticas por flojera XD
                         System.out.println(jsobject);
                         JSONObject jsonObject = new JSONObject(jsobject);
-                        sendHttpRequest("201.166.145.191:80", jsonObject);
+//                        sendHttpRequest("201.166.145.191:80", jsonObject);
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -77,6 +76,8 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+
+        final Button connect = findViewById(R.id.connect);
 
         bluetooth.setBluetoothConnectionListener(new BluetoothSPP.BluetoothConnectionListener() {
             public void onDeviceConnected(String name, String address) {
@@ -93,7 +94,6 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-
         connect.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -103,6 +103,27 @@ public class MainActivity extends AppCompatActivity {
                     Intent intent = new Intent(getApplicationContext(), DeviceList.class);
                     startActivityForResult(intent, BluetoothState.REQUEST_CONNECT_DEVICE);
                 }
+            }
+        });
+
+        final Button disconnect = findViewById(R.id.disconnect);
+
+        disconnect.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                switch(motionEvent.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        disconnect.setBackground(getResources().getDrawable(R.color.lightred));
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        disconnect.setBackground(getResources().getDrawable(R.color.red));
+                        stopService();
+                        Toast.makeText(getApplicationContext()
+                                , "Desconectado"
+                                , Toast.LENGTH_SHORT).show();
+                        break;
+                }
+                return false;
             }
         });
     }
@@ -122,6 +143,9 @@ public class MainActivity extends AppCompatActivity {
 
     public void onDestroy() {
         super.onDestroy();
+    }
+
+    public void stopService() {
         bluetooth.stopService();
     }
 
@@ -140,22 +164,23 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
+
     public void raiseAudio() {
         AudioManager audio = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+        assert audio != null;
         int maxVolume = audio.getStreamMaxVolume(AudioManager.STREAM_NOTIFICATION);
         float percent = 1f;
-        int seventyVolume = (int) (maxVolume*percent);
+        int seventyVolume = (int) (maxVolume * percent);
         audio.setStreamVolume(AudioManager.STREAM_NOTIFICATION, seventyVolume, 0);
     }
 
-    public void showNotification(String title, String message, Context mContext)
-    {
+    public void showNotification(String title, String message, Context mContext) {
         //Creates an explicit intent for an Activity in your app*
-        Intent resultIntent = new Intent(mContext , MainActivity.class);
+        Intent resultIntent = new Intent(mContext, MainActivity.class);
         resultIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
         PendingIntent resultPendingIntent = PendingIntent.getActivity(mContext,
-                0 , resultIntent,
+                0, resultIntent,
                 PendingIntent.FLAG_UPDATE_CURRENT);
 
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(mContext);
@@ -167,8 +192,7 @@ public class MainActivity extends AppCompatActivity {
                 .setContentIntent(resultPendingIntent);
 
         NotificationManager mNotificationManager = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O)
-        {
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
             int importance = NotificationManager.IMPORTANCE_HIGH;
             NotificationChannel notificationChannel = new NotificationChannel("3", "prueba", importance);
             notificationChannel.enableLights(true);
@@ -181,7 +205,7 @@ public class MainActivity extends AppCompatActivity {
         }
         assert mNotificationManager != null;
         raiseAudio();
-        mNotificationManager.notify(0 , mBuilder.build());
+        mNotificationManager.notify(0, mBuilder.build());
     }
 
     public void sendHttpRequest(String url, JSONObject jsonObject) {
