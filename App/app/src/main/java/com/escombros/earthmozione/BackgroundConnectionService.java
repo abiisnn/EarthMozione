@@ -1,4 +1,4 @@
-package com.escombros.prueba;
+package com.escombros.earthmozione;
 
 import android.app.Activity;
 import android.app.IntentService;
@@ -16,6 +16,8 @@ import android.os.Build;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
 import android.widget.Toast;
+
+import com.escombros.prueba.R;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -70,7 +72,6 @@ public class BackgroundConnectionService extends IntentService {
     }
 
     public void onReceive(Context context, Intent intent) {
-        System.out.println("OOOOOOOOOO");
         if (intent == null) return;
         if (!initBT(context)) return;
 
@@ -163,16 +164,16 @@ public class BackgroundConnectionService extends IntentService {
         if (!isActivated) return;
         AudioManager audio = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
         assert audio != null;
-        int maxVolume = audio.getStreamMaxVolume(AudioManager.STREAM_NOTIFICATION);
+        int maxVolume = audio.getStreamMaxVolume(AudioManager.STREAM_ALARM);
         float percent = 1f;
         int seventyVolume = (int) (maxVolume * percent);
-        audio.setStreamVolume(AudioManager.STREAM_NOTIFICATION, seventyVolume, 0);
+        audio.setStreamVolume(AudioManager.STREAM_ALARM, seventyVolume, 0);
     }
 
     public void lowerAudio(Context context) {
         AudioManager audio = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
         assert audio != null;
-        audio.setStreamVolume(AudioManager.STREAM_NOTIFICATION, 0, 0);
+        audio.setStreamVolume(AudioManager.STREAM_ALARM, 0, 0);
     }
 
     public void showNotification(String title, String message, Context mContext) {

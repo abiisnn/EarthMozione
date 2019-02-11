@@ -1,4 +1,4 @@
-package com.escombros.prueba;
+package com.escombros.earthmozione;
 
 import android.annotation.SuppressLint;
 import android.app.NotificationChannel;
@@ -16,6 +16,7 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.escombros.prueba.R;
 
 import org.json.JSONObject;
 

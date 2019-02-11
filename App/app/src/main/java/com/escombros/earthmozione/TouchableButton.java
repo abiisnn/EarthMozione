@@ -1,4 +1,4 @@
-package com.escombros.prueba;
+package com.escombros.earthmozione;
 
 import android.content.Context;
 import android.widget.Button;
