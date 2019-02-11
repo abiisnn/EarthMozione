@@ -11,6 +11,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.media.AudioManager;
+import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
 import android.support.annotation.Nullable;
@@ -187,6 +188,7 @@ public class BackgroundConnectionService extends IntentService {
                 PendingIntent.FLAG_UPDATE_CURRENT);
 
         Uri alarmSound = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://" + mContext.getPackageName() + "/" + R.raw.alarm);
+//        alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
 
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(mContext);
         mBuilder.setSmallIcon(R.mipmap.ic_launcher);
